@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import Link from "next/link";
 
 const PLATFORMS = [
   { value: "instagram", label: "Instagram" },
@@ -42,35 +43,17 @@ export default function Home() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productName,
-          description,
-          targetMarket,
-          platform,
-          tone,
-        }),
+        body: JSON.stringify({ productName, description, targetMarket, platform, tone }),
       });
-
       const data = await res.json();
 
-      if (res.status === 401) {
-        setError("Kamu harus login dulu.");
-        return;
-      }
-
-      if (res.status === 429) {
-        window.location.href = "/pricing";
-        return;
-      }
-
-      if (!res.ok) {
-        setError(data.error || "Terjadi kesalahan.");
-        return;
-      }
+      if (res.status === 401) { setError("Kamu harus login dulu."); return; }
+      if (res.status === 429) { window.location.href = "/pricing"; return; }
+      if (!res.ok) { setError(data.error || "Terjadi kesalahan."); return; }
 
       setResult(data.content);
       setRemaining(data.remaining);
-    } catch (err) {
+    } catch {
       setError("Gagal terhubung ke server.");
     } finally {
       setLoading(false);
@@ -78,96 +61,122 @@ export default function Home() {
   }
 
   if (status === "loading") {
-    return <div className="p-8">Memuat...</div>;
+    return <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--color-bg)" }}>Memuat...</div>;
   }
 
   if (!session) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6 px-6" style={{ backgroundColor: "var(--color-bg)" }}>
+        <h1 className="font-display font-extrabold text-4xl text-center" style={{ color: "var(--color-ink)" }}>
+          Captionin
+        </h1>
+        <p className="text-center max-w-sm opacity-70">
+          Bikin konten promosi untuk Instagram, Shopee, TikTok, dan WhatsApp dalam hitungan detik.
+        </p>
         <button
           onClick={() => signIn("google")}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium"
+          className="px-6 py-3 rounded-full font-semibold text-white shadow-md"
+          style={{ backgroundColor: "var(--color-turmeric)" }}
         >
-          Login dengan Google untuk mulai
+          Masuk dengan Google
         </button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Captionin</h1>
-        <button onClick={() => signOut()} className="text-sm text-gray-500 underline">
-          Logout ({session.user?.email})
-        </button>
-      </div>
-
-      <div className="space-y-4">
-        <input
-          className="w-full border rounded-lg p-3"
-          placeholder="Nama produk"
-          value={productName}
-          onChange={(e) => setProductName(e.target.value)}
-        />
-        <textarea
-          className="w-full border rounded-lg p-3"
-          placeholder="Deskripsi produk"
-          rows={3}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input
-          className="w-full border rounded-lg p-3"
-          placeholder="Target market (opsional)"
-          value={targetMarket}
-          onChange={(e) => setTargetMarket(e.target.value)}
-        />
-
-        <select
-          className="w-full border rounded-lg p-3"
-          value={platform}
-          onChange={(e) => setPlatform(e.target.value)}
-        >
-          {PLATFORMS.map((p) => (
-            <option key={p.value} value={p.value}>
-              {p.label}
-            </option>
-          ))}
-        </select>
-
-        <select
-          className="w-full border rounded-lg p-3"
-          value={tone}
-          onChange={(e) => setTone(e.target.value)}
-        >
-          {TONES.map((t) => (
-            <option key={t.value} value={t.value}>
-              {t.label}
-            </option>
-          ))}
-        </select>
-
-        <button
-          onClick={handleGenerate}
-          disabled={loading || !productName || !description}
-          className="w-full bg-black text-white py-3 rounded-lg font-medium disabled:opacity-40"
-        >
-          {loading ? "Membuat..." : "Generate Konten"}
-        </button>
-      </div>
-
-      {error && <p className="text-red-600">{error}</p>}
-
-      {remaining !== null && (
-        <p className="text-sm text-gray-500">Sisa kuota hari ini: {remaining}</p>
-      )}
-
-      {result && (
-        <div className="bg-gray-50 border rounded-lg p-4 whitespace-pre-wrap">
-          {result}
+    <div className="min-h-screen" style={{ backgroundColor: "var(--color-bg)" }}>
+      <div className="max-w-2xl mx-auto p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <span className="font-display font-extrabold text-xl" style={{ color: "var(--color-ink)" }}>
+            Captionin
+          </span>
+          <div className="flex items-center gap-3">
+            <Link href="/profile" className="text-sm font-semibold underline opacity-80">
+              Profil
+            </Link>
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="text-sm font-semibold px-4 py-2 rounded-full text-white"
+              style={{ backgroundColor: "var(--color-chili)" }}
+            >
+              Logout
+            </button>
+          </div>
         </div>
-      )}
+
+        <div className="rounded-2xl p-5 space-y-4 border-2" style={{ borderColor: "var(--color-sand)", backgroundColor: "white" }}>
+          <input
+            className="w-full border-2 rounded-xl p-3 outline-none focus:border-[var(--color-pandan)]"
+            style={{ borderColor: "var(--color-sand)" }}
+            placeholder="Nama produk"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+          />
+          <textarea
+            className="w-full border-2 rounded-xl p-3 outline-none focus:border-[var(--color-pandan)]"
+            style={{ borderColor: "var(--color-sand)" }}
+            placeholder="Deskripsi produk"
+            rows={3}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <input
+            className="w-full border-2 rounded-xl p-3 outline-none focus:border-[var(--color-pandan)]"
+            style={{ borderColor: "var(--color-sand)" }}
+            placeholder="Target market (opsional)"
+            value={targetMarket}
+            onChange={(e) => setTargetMarket(e.target.value)}
+          />
+
+          <div className="grid grid-cols-2 gap-3">
+            <select
+              className="border-2 rounded-xl p-3"
+              style={{ borderColor: "var(--color-sand)" }}
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value)}
+            >
+              {PLATFORMS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+            </select>
+            <select
+              className="border-2 rounded-xl p-3"
+              style={{ borderColor: "var(--color-sand)" }}
+              value={tone}
+              onChange={(e) => setTone(e.target.value)}
+            >
+              {TONES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+            </select>
+          </div>
+
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !productName || !description}
+            className="w-full py-3 rounded-xl font-bold text-white disabled:opacity-40"
+            style={{ backgroundColor: "var(--color-pandan)" }}
+          >
+            {loading ? "Membuat..." : "Generate Konten"}
+          </button>
+        </div>
+
+        {error && <p style={{ color: "var(--color-chili)" }}>{error}</p>}
+        {remaining !== null && <p className="text-sm opacity-60">Sisa kuota hari ini: {remaining}</p>}
+
+        {result && (
+          <div className="relative">
+            <div className="rounded-t-lg p-5 border-2 border-b-0" style={{ borderColor: "var(--color-sand)", backgroundColor: "white" }}>
+              <p className="text-xs uppercase tracking-widest opacity-50 mb-2">Hasil — {platform}</p>
+              <p className="whitespace-pre-wrap font-mono text-sm">{result}</p>
+            </div>
+            <div
+              className="h-2 border-2 border-t-0 rounded-b-lg"
+              style={{
+                borderColor: "var(--color-sand)",
+                backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 6px, var(--color-sand) 6px, var(--color-sand) 10px)",
+              }}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
