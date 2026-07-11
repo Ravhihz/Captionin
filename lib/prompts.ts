@@ -41,16 +41,22 @@ export function buildPrompt(params: {
   const rules = PLATFORM_RULES[platform];
   if (!rules) throw new Error("Platform tidak dikenali");
 
-  return `
+  // Statis & identik untuk semua request di platform yang sama -> kandidat prompt caching di Groq
+  const systemPrompt = `
 ${BASE_INSTRUCTION}
 
+${rules}
+
+Output hanya konten, tanpa embel-embel penjelasan.
+`;
+
+  // Dinamis, beda tiap produk -> jangan dicampur ke system prompt
+  const userPrompt = `
 Produk: ${productName}
 Deskripsi: ${description}
 ${targetMarket ? `Target: ${targetMarket}` : ""}
 ${tone ? `Tone: ${tone}` : ""}
-
-${rules}
-
-Output hanya konten.
 `;
+
+  return { systemPrompt, userPrompt };
 }

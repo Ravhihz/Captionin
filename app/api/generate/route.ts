@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const prompt = buildPrompt(body);
-  const content = await generateContent(prompt);
+  const { systemPrompt, userPrompt } = buildPrompt(body);
+  const content = await generateContent(systemPrompt, userPrompt);
 
   await saveHistoryEntry(session.user.email, {
     id: crypto.randomUUID(),

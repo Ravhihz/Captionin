@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 
 const PLATFORMS = [
   { value: "instagram", label: "Instagram" },
@@ -66,20 +67,30 @@ export default function Home() {
 
   if (!session) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-6 px-6" style={{ backgroundColor: "var(--color-bg)" }}>
-        <h1 className="font-display font-extrabold text-4xl text-center" style={{ color: "var(--color-ink)" }}>
-          Captionin
-        </h1>
-        <p className="text-center max-w-sm opacity-70">
-          Bikin konten promosi untuk Instagram, Shopee, TikTok, dan WhatsApp dalam hitungan detik.
-        </p>
-        <button
-          onClick={() => signIn("google")}
-          className="px-6 py-3 rounded-full font-semibold text-white shadow-md"
-          style={{ backgroundColor: "var(--color-turmeric)" }}
-        >
-          Masuk dengan Google
-        </button>
+      <div
+        className="min-h-screen relative flex flex-col items-center justify-center gap-6 px-6"
+        style={{
+          backgroundImage: "url('/background.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* Overlay supaya teks & tombol tetap terbaca di atas background yang ramai */}
+        <div className="absolute inset-0" style={{ backgroundColor: "rgba(255, 251, 243, 0.82)" }} />
+
+        <div className="relative flex flex-col items-center gap-6">
+          <Image src="/logo.webp" alt="Captionin" width={112} height={112} priority className="rounded-full shadow-md" />
+          <p className="text-center max-w-sm opacity-70">
+            Bikin konten promosi untuk Instagram, Shopee, TikTok, dan WhatsApp dalam hitungan detik.
+          </p>
+          <button
+            onClick={() => signIn("google")}
+            className="px-6 py-3 rounded-full font-semibold text-white shadow-md"
+            style={{ backgroundColor: "var(--color-turmeric)" }}
+          >
+            Masuk dengan Google
+          </button>
+        </div>
       </div>
     );
   }
@@ -88,7 +99,8 @@ export default function Home() {
     <div className="min-h-screen" style={{ backgroundColor: "var(--color-bg)" }}>
       <div className="max-w-2xl mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <span className="font-display font-extrabold text-xl" style={{ color: "var(--color-ink)" }}>
+          <span className="flex items-center gap-2 font-display font-extrabold text-xl" style={{ color: "var(--color-ink)" }}>
+            <Image src="/logo.webp" alt="Captionin" width={32} height={32} className="rounded-full" />
             Captionin
           </span>
           <div className="flex items-center gap-3">
