@@ -1,8 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Captionin — AI Content Generator
 
-## Getting Started
+This project is built using [Next.js](https://nextjs.org) and bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app). It serves as an AI-powered platform for generating marketing content across multiple platforms.
 
-First, run the development server:
+---
+
+## 📦 Getting Started
+
+To run the development server locally, use one of the following commands:
 
 ```bash
 npm run dev
@@ -14,23 +18,84 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+After starting the server, open your browser and navigate to:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+You can begin editing the application by modifying:
 
-## Learn More
+```
+app/page.tsx
+```
 
-To learn more about Next.js, take a look at the following resources:
+The page will automatically reload as you make changes.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ✨ Features
 
-## Deploy on Vercel
+* 🔐 Authentication system (NextAuth)
+* 🤖 AI-powered content generation (multi-provider ready)
+* 📊 User quota & rate limiting
+* 📝 Content history tracking
+* 🎯 Multi-platform prompt optimization (Instagram, Shopee, TikTok, WhatsApp)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Fonts Optimization
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to optimize and load the [Geist](https://vercel.com/font) font family by Vercel for better performance and UI consistency.
+
+---
+
+## 📚 Learn More
+
+To explore more about the technologies used:
+
+* [Next.js Documentation](https://nextjs.org/docs) — comprehensive guide and API reference
+* [Learn Next.js](https://nextjs.org/learn) — interactive tutorial
+* [Next.js GitHub Repository](https://github.com/vercel/next.js) — source code and contributions
+
+---
+
+## 🚀 Deployment
+
+The easiest way to deploy this application is via the Vercel platform:
+
+👉 https://vercel.com/new
+
+For more detailed instructions, refer to:
+
+👉 https://nextjs.org/docs/app/building-your-application/deploying
+
+---
+
+## ⚙️ Environment Variables
+
+Before deploying, make sure to configure the required environment variables:
+
+* `NEXTAUTH_SECRET`
+* `GROQ_API_KEY` / `GOOGLE_API_KEY` / `ANTHROPIC_API_KEY`
+* `UPSTASH_REDIS_REST_URL`
+* `UPSTASH_REDIS_REST_TOKEN`
+
+Set these variables in your local `.env.local` file and in your deployment platform (e.g., Vercel).
+
+---
+
+## 🧠 Notes
+
+This project is designed as a scalable SaaS-ready AI application. Future improvements may include:
+
+* 💳 Payment integration (Midtrans / Xendit)
+* 📈 Analytics dashboard
+* ⚡ Caching for cost efficiency
+* 🎛️ Advanced prompt customization
+
+---
+
+## 📄 License
+
+This project is open-source and available for personal or commercial use.
