@@ -6,11 +6,14 @@ export async function generateContent(systemPrompt: string, userPrompt: string) 
   const completion = await groq.chat.completions.create({
     model: "openai/gpt-oss-20b",
     messages: [
-      { role: "system", content: systemPrompt }, // statis -> berpeluang kena prompt caching
-      { role: "user", content: userPrompt }, // dinamis per produk
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
     ],
-    max_tokens: 350, // cukup buat caption/deskripsi pendek, hemat biaya output
+    max_tokens: 800, // naik dari 350 — model reasoning butuh ruang buat "mikir" + nulis jawaban
+    reasoning_effort: "low", // caption pendek nggak butuh reasoning berat, hemat token & lebih cepat
   });
 
-  return completion.choices[0]?.message?.content || "";
+  const raw = completion.choices[0]?.message?.content || "";
+  // Bersihin markdown bold/italic yang kadang masih diselipin model meski udah dilarang di prompt
+  return raw.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1");
 }

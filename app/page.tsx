@@ -62,34 +62,79 @@ export default function Home() {
   }
 
   if (status === "loading") {
-    return <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--color-bg)" }}>Memuat...</div>;
+    return (
+      <div
+        className="min-h-screen flex flex-col items-center justify-center gap-4"
+        style={{ backgroundColor: "var(--color-bg)" }}
+      >
+        <Image
+          src="/logo.webp"
+          alt="Captionin"
+          width={64}
+          height={64}
+          priority
+          className="rounded-full animate-pulse"
+        />
+        <div
+          className="w-6 h-6 rounded-full border-4 border-t-transparent animate-spin"
+          style={{ borderColor: "var(--color-turmeric)", borderTopColor: "transparent" }}
+        />
+        <p className="text-sm opacity-60">Memuat...</p>
+      </div>
+    );
   }
 
   if (!session) {
     return (
       <div
-        className="min-h-screen relative flex flex-col items-center justify-center gap-6 px-6"
+        className="min-h-screen relative flex flex-col items-center justify-center gap-8 px-6 py-16"
         style={{
           backgroundImage: "url('/background.webp')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       >
-        {/* Overlay supaya teks & tombol tetap terbaca di atas background yang ramai */}
-        <div className="absolute inset-0" style={{ backgroundColor: "rgba(255, 251, 243, 0.82)" }} />
+        {/* Overlay: turun ke 0.72 supaya background masih kelihatan tapi teks tetap kontras */}
+        <div className="absolute inset-0" style={{ backgroundColor: "rgba(255, 251, 243, 0.72)" }} />
 
-        <div className="relative flex flex-col items-center gap-6">
-          <Image src="/logo.webp" alt="Captionin" width={112} height={112} priority className="rounded-full shadow-md" />
-          <p className="text-center max-w-sm opacity-70">
-            Bikin konten promosi untuk Instagram, Shopee, TikTok, dan WhatsApp dalam hitungan detik.
-          </p>
+        <div className="relative flex flex-col items-center gap-6 max-w-lg w-full">
+          <Image src="/logo.webp" alt="Captionin" width={112} height={112} priority className="rounded-full shadow-lg" />
+
+          <div className="text-center space-y-2">
+            <h1 className="font-display font-extrabold text-2xl" style={{ color: "var(--color-ink)" }}>
+              Konten promosi jadi, tanpa mikir kata-kata
+            </h1>
+            <p className="opacity-70 text-sm">
+              Bikin caption untuk Instagram, Shopee, TikTok, dan WhatsApp dalam hitungan detik.
+            </p>
+          </div>
+
           <button
             onClick={() => signIn("google")}
-            className="px-6 py-3 rounded-full font-semibold text-white shadow-md"
+            className="px-6 py-3 rounded-full font-semibold text-white shadow-md transition-all duration-150 hover:brightness-110 hover:shadow-lg active:scale-[0.97]"
             style={{ backgroundColor: "var(--color-turmeric)" }}
           >
             Masuk dengan Google
           </button>
+
+          {/* Value prop cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full mt-4">
+            <div className="rounded-2xl p-4 text-center space-y-1 shadow-sm transition-shadow hover:shadow-md" style={{ backgroundColor: "white", border: "2px solid var(--color-sand)" }}>
+              <div className="text-2xl">⚡</div>
+              <p className="font-display font-bold text-sm" style={{ color: "var(--color-ink)" }}>Kilat</p>
+              <p className="text-xs opacity-60">Caption jadi dalam hitungan detik, bukan menit</p>
+            </div>
+            <div className="rounded-2xl p-4 text-center space-y-1 shadow-sm transition-shadow hover:shadow-md" style={{ backgroundColor: "white", border: "2px solid var(--color-sand)" }}>
+              <div className="text-2xl">📱</div>
+              <p className="font-display font-bold text-sm" style={{ color: "var(--color-ink)" }}>Multi Platform</p>
+              <p className="text-xs opacity-60">IG, Shopee, TikTok, WhatsApp — sekali generate</p>
+            </div>
+            <div className="rounded-2xl p-4 text-center space-y-1 shadow-sm transition-shadow hover:shadow-md" style={{ backgroundColor: "white", border: "2px solid var(--color-sand)" }}>
+              <div className="text-2xl">🎁</div>
+              <p className="font-display font-bold text-sm" style={{ color: "var(--color-ink)" }}>Gratis Tiap Hari</p>
+              <p className="text-xs opacity-60">Kuota harian gratis, upgrade kalau kurang</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -104,12 +149,12 @@ export default function Home() {
             Captionin
           </span>
           <div className="flex items-center gap-3">
-            <Link href="/profile" className="text-sm font-semibold underline opacity-80">
+            <Link href="/profile" className="text-sm font-semibold underline opacity-80 transition-opacity hover:opacity-100">
               Profil
             </Link>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="text-sm font-semibold px-4 py-2 rounded-full text-white"
+              className="text-sm font-semibold px-4 py-2 rounded-full text-white transition-all duration-150 hover:brightness-110 active:scale-[0.97]"
               style={{ backgroundColor: "var(--color-chili)" }}
             >
               Logout
@@ -119,14 +164,14 @@ export default function Home() {
 
         <div className="rounded-2xl p-5 space-y-4 border-2" style={{ borderColor: "var(--color-sand)", backgroundColor: "white" }}>
           <input
-            className="w-full border-2 rounded-xl p-3 outline-none focus:border-[var(--color-pandan)]"
+            className="w-full border-2 rounded-xl p-3 outline-none transition-colors focus:border-[var(--color-pandan)]"
             style={{ borderColor: "var(--color-sand)" }}
             placeholder="Nama produk"
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
           />
           <textarea
-            className="w-full border-2 rounded-xl p-3 outline-none focus:border-[var(--color-pandan)]"
+            className="w-full border-2 rounded-xl p-3 outline-none transition-colors focus:border-[var(--color-pandan)]"
             style={{ borderColor: "var(--color-sand)" }}
             placeholder="Deskripsi produk"
             rows={3}
@@ -134,7 +179,7 @@ export default function Home() {
             onChange={(e) => setDescription(e.target.value)}
           />
           <input
-            className="w-full border-2 rounded-xl p-3 outline-none focus:border-[var(--color-pandan)]"
+            className="w-full border-2 rounded-xl p-3 outline-none transition-colors focus:border-[var(--color-pandan)]"
             style={{ borderColor: "var(--color-sand)" }}
             placeholder="Target market (opsional)"
             value={targetMarket}
@@ -143,7 +188,7 @@ export default function Home() {
 
           <div className="grid grid-cols-2 gap-3">
             <select
-              className="border-2 rounded-xl p-3"
+              className="border-2 rounded-xl p-3 cursor-pointer transition-colors hover:border-[var(--color-pandan)]"
               style={{ borderColor: "var(--color-sand)" }}
               value={platform}
               onChange={(e) => setPlatform(e.target.value)}
@@ -151,7 +196,7 @@ export default function Home() {
               {PLATFORMS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
             </select>
             <select
-              className="border-2 rounded-xl p-3"
+              className="border-2 rounded-xl p-3 cursor-pointer transition-colors hover:border-[var(--color-pandan)]"
               style={{ borderColor: "var(--color-sand)" }}
               value={tone}
               onChange={(e) => setTone(e.target.value)}
@@ -163,7 +208,7 @@ export default function Home() {
           <button
             onClick={handleGenerate}
             disabled={loading || !productName || !description}
-            className="w-full py-3 rounded-xl font-bold text-white disabled:opacity-40"
+            className="w-full py-3 rounded-xl font-bold text-white disabled:opacity-40 transition-all duration-150 enabled:hover:brightness-110 enabled:active:scale-[0.98]"
             style={{ backgroundColor: "var(--color-pandan)" }}
           >
             {loading ? "Membuat..." : "Generate Konten"}

@@ -19,8 +19,8 @@ Deskripsi 1 paragraf.
 Akhiri CTA.`,
 
   tiktok: `
-Script 15-20 detik:
-Hook -> Problem -> Solusi -> CTA.
+Script 15-20 detik, alur: buka dengan hook kuat, sampaikan masalah, tawarkan solusi, tutup dengan CTA.
+Tulis sebagai satu narasi mengalir tanpa label section (jangan tulis kata "Hook/Problem/Solusi/CTA" secara eksplisit, jangan pakai bold/emoji sebagai penanda bagian).
 Santai, engaging.`,
 
   whatsapp: `
