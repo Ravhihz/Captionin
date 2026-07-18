@@ -32,6 +32,7 @@ export default function Home() {
 
   const [result, setResult] = useState("");
   const [remaining, setRemaining] = useState<number | null>(null);
+  const [unlimited, setUnlimited] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
@@ -267,12 +268,12 @@ export default function Home() {
           <p
             className="text-sm inline-block px-3 py-1 rounded-full"
             style={{
-              backgroundColor: remaining <= 1 ? "var(--color-chili)" : "var(--color-sand)",
-              color: remaining <= 1 ? "white" : "var(--color-ink)",
-              opacity: remaining <= 1 ? 1 : 0.8,
+              backgroundColor: unlimited ? "var(--color-pandan)" : remaining <= 1 ? "var(--color-chili)" : "var(--color-sand)",
+              color: unlimited || remaining <= 1 ? "white" : "var(--color-ink)",
+              opacity: unlimited || remaining <= 1 ? 1 : 0.8,
             }}
           >
-            Sisa kuota hari ini: {remaining}
+            {unlimited ? "Premium — generate tanpa batas" : `Sisa kuota hari ini: ${remaining}`}
           </p>
         )}
 
@@ -286,26 +287,32 @@ export default function Home() {
 
         {!loading && result && (
           <div className="relative animate-fade-in-up">
-            <div className="rounded-t-lg p-5 border-2 border-b-0" style={{ borderColor: "var(--color-sand)", backgroundColor: "white" }}>
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs uppercase tracking-widest opacity-50">Hasil — {platform}</p>
+            <div
+              className="rounded-2xl p-5 shadow-md"
+              style={{
+                background: "linear-gradient(135deg, white 0%, var(--color-sand) 200%)",
+                border: "2px solid var(--color-pandan)",
+              }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span
+                  className="text-xs font-bold px-3 py-1 rounded-full text-white"
+                  style={{ backgroundColor: "var(--color-pandan)" }}
+                >
+                  {PLATFORMS.find((p) => p.value === platform)?.icon} {platform.toUpperCase()}
+                </span>
                 <button
                   onClick={handleCopy}
                   className="text-xs font-semibold px-3 py-1 rounded-full transition-all duration-150 active:scale-[0.95]"
-                  style={{ backgroundColor: "var(--color-sand)", color: "var(--color-ink)" }}
+                  style={{ backgroundColor: "var(--color-turmeric)", color: "white" }}
                 >
                   {copied ? "Disalin ✓" : "Salin teks"}
                 </button>
               </div>
-              <p className="whitespace-pre-wrap font-mono text-sm">{result}</p>
+              <p className="whitespace-pre-wrap font-sans text-[15px] leading-relaxed" style={{ color: "var(--color-ink)" }}>
+                {result}
+              </p>
             </div>
-            <div
-              className="h-2 border-2 border-t-0 rounded-b-lg"
-              style={{
-                borderColor: "var(--color-sand)",
-                backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 6px, var(--color-sand) 6px, var(--color-sand) 10px)",
-              }}
-            />
           </div>
         )}
       </div>

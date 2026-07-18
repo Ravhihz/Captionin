@@ -11,6 +11,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [premium, setPremium] = useState(false);
 
   async function handleCopy(id: string, content: string) {
     await navigator.clipboard.writeText(content);
@@ -22,7 +23,10 @@ export default function ProfilePage() {
     if (status === "authenticated") {
       fetch("/api/history")
         .then((res) => res.json())
-        .then((data) => setHistory(data.history || []))
+        .then((data) => {
+          setHistory(data.history || []);
+          setPremium(Boolean(data.premium));
+        })
         .finally(() => setLoading(false));
     }
   }, [status]);
@@ -51,7 +55,26 @@ export default function ProfilePage() {
           style={{ borderColor: "var(--color-sand)", backgroundColor: "white" }}
         >
           <p className="text-xs uppercase tracking-wide opacity-60">Akun</p>
-          <p className="font-display font-bold text-lg">{session.user?.email}</p>
+          <p className="font-display font-bold text-lg mb-3">{session.user?.email}</p>
+
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <span
+              className="text-xs font-bold px-3 py-1 rounded-full text-white"
+              style={{ backgroundColor: premium ? "var(--color-pandan)" : "var(--color-sand)", color: premium ? "white" : "var(--color-ink)" }}
+            >
+              {premium ? "✨ Premium" : "Gratis"}
+            </span>
+
+            {!premium && (
+              <Link
+                href="/pricing"
+                className="text-xs font-semibold underline"
+                style={{ color: "var(--color-turmeric)" }}
+              >
+                Upgrade ke Premium →
+              </Link>
+            )}
+          </div>
         </div>
 
         <div>
