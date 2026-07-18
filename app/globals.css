@@ -19,3 +19,21 @@ body {
 .font-display {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.35s ease-out both;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+.animate-skeleton {
+  animation: skeletonPulse 1.2s ease-in-out infinite;
+}

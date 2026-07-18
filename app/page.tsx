@@ -6,10 +6,10 @@ import Link from "next/link";
 import Image from "next/image";
 
 const PLATFORMS = [
-  { value: "instagram", label: "Instagram" },
-  { value: "shopee", label: "Shopee" },
-  { value: "tiktok", label: "TikTok" },
-  { value: "whatsapp", label: "WhatsApp" },
+  { value: "instagram", label: "Instagram", icon: "📸" },
+  { value: "shopee", label: "Shopee", icon: "🛒" },
+  { value: "tiktok", label: "TikTok", icon: "🎵" },
+  { value: "whatsapp", label: "WhatsApp", icon: "💬" },
 ];
 
 const TONES = [
@@ -34,6 +34,15 @@ export default function Home() {
   const [remaining, setRemaining] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const MAX_DESC = 500;
+
+  async function handleCopy() {
+    await navigator.clipboard.writeText(result);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
 
   async function handleGenerate() {
     setLoading(true);
@@ -117,23 +126,23 @@ export default function Home() {
             Masuk dengan Google
           </button>
 
-          {/* Value prop cards */}
+          {/* Value prop cards — fade-in satu-satu biar gak muncul kaku barengan */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full mt-4">
-            <div className="rounded-2xl p-4 text-center space-y-1 shadow-sm transition-shadow hover:shadow-md" style={{ backgroundColor: "white", border: "2px solid var(--color-sand)" }}>
-              <div className="text-2xl">⚡</div>
-              <p className="font-display font-bold text-sm" style={{ color: "var(--color-ink)" }}>Kilat</p>
-              <p className="text-xs opacity-60">Caption jadi dalam hitungan detik, bukan menit</p>
-            </div>
-            <div className="rounded-2xl p-4 text-center space-y-1 shadow-sm transition-shadow hover:shadow-md" style={{ backgroundColor: "white", border: "2px solid var(--color-sand)" }}>
-              <div className="text-2xl">📱</div>
-              <p className="font-display font-bold text-sm" style={{ color: "var(--color-ink)" }}>Multi Platform</p>
-              <p className="text-xs opacity-60">IG, Shopee, TikTok, WhatsApp — sekali generate</p>
-            </div>
-            <div className="rounded-2xl p-4 text-center space-y-1 shadow-sm transition-shadow hover:shadow-md" style={{ backgroundColor: "white", border: "2px solid var(--color-sand)" }}>
-              <div className="text-2xl">🎁</div>
-              <p className="font-display font-bold text-sm" style={{ color: "var(--color-ink)" }}>Gratis Tiap Hari</p>
-              <p className="text-xs opacity-60">Kuota harian gratis, upgrade kalau kurang</p>
-            </div>
+            {[
+              { icon: "⚡", title: "Kilat", desc: "Caption jadi dalam hitungan detik, bukan menit" },
+              { icon: "📱", title: "Multi Platform", desc: "IG, Shopee, TikTok, WhatsApp — sekali generate" },
+              { icon: "🎁", title: "Gratis Tiap Hari", desc: "Kuota harian gratis, upgrade kalau kurang" },
+            ].map((card, i) => (
+              <div
+                key={card.title}
+                className="rounded-2xl p-4 text-center space-y-1 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 animate-fade-in-up"
+                style={{ backgroundColor: "white", border: "2px solid var(--color-sand)", animationDelay: `${i * 100}ms` }}
+              >
+                <div className="text-2xl">{card.icon}</div>
+                <p className="font-display font-bold text-sm" style={{ color: "var(--color-ink)" }}>{card.title}</p>
+                <p className="text-xs opacity-60">{card.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -170,14 +179,23 @@ export default function Home() {
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
           />
-          <textarea
-            className="w-full border-2 rounded-xl p-3 outline-none transition-colors focus:border-[var(--color-pandan)]"
-            style={{ borderColor: "var(--color-sand)" }}
-            placeholder="Deskripsi produk"
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <div>
+            <textarea
+              className="w-full border-2 rounded-xl p-3 outline-none transition-colors focus:border-[var(--color-pandan)]"
+              style={{ borderColor: "var(--color-sand)" }}
+              placeholder="Deskripsi produk"
+              rows={3}
+              maxLength={MAX_DESC}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <p
+              className="text-xs text-right mt-1 opacity-50 transition-colors"
+              style={description.length > MAX_DESC * 0.9 ? { color: "var(--color-chili)", opacity: 1 } : undefined}
+            >
+              {description.length}/{MAX_DESC}
+            </p>
+          </div>
           <input
             className="w-full border-2 rounded-xl p-3 outline-none transition-colors focus:border-[var(--color-pandan)]"
             style={{ borderColor: "var(--color-sand)" }}
@@ -186,23 +204,52 @@ export default function Home() {
             onChange={(e) => setTargetMarket(e.target.value)}
           />
 
-          <div className="grid grid-cols-2 gap-3">
-            <select
-              className="border-2 rounded-xl p-3 cursor-pointer transition-colors hover:border-[var(--color-pandan)]"
-              style={{ borderColor: "var(--color-sand)" }}
-              value={platform}
-              onChange={(e) => setPlatform(e.target.value)}
-            >
-              {PLATFORMS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
-            </select>
-            <select
-              className="border-2 rounded-xl p-3 cursor-pointer transition-colors hover:border-[var(--color-pandan)]"
-              style={{ borderColor: "var(--color-sand)" }}
-              value={tone}
-              onChange={(e) => setTone(e.target.value)}
-            >
-              {TONES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
-            </select>
+          <div>
+            <p className="text-xs uppercase tracking-wide opacity-50 mb-2">Platform</p>
+            <div className="flex flex-wrap gap-2">
+              {PLATFORMS.map((p) => {
+                const active = platform === p.value;
+                return (
+                  <button
+                    key={p.value}
+                    type="button"
+                    onClick={() => setPlatform(p.value)}
+                    className="px-3 py-2 rounded-xl border-2 text-sm font-semibold transition-all duration-150 active:scale-[0.96]"
+                    style={
+                      active
+                        ? { backgroundColor: "var(--color-pandan)", borderColor: "var(--color-pandan)", color: "white" }
+                        : { borderColor: "var(--color-sand)", color: "var(--color-ink)" }
+                    }
+                  >
+                    {p.icon} {p.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs uppercase tracking-wide opacity-50 mb-2">Tone</p>
+            <div className="flex flex-wrap gap-2">
+              {TONES.map((t) => {
+                const active = tone === t.value;
+                return (
+                  <button
+                    key={t.value}
+                    type="button"
+                    onClick={() => setTone(t.value)}
+                    className="px-3 py-2 rounded-xl border-2 text-sm font-semibold transition-all duration-150 active:scale-[0.96]"
+                    style={
+                      active
+                        ? { backgroundColor: "var(--color-turmeric)", borderColor: "var(--color-turmeric)", color: "white" }
+                        : { borderColor: "var(--color-sand)", color: "var(--color-ink)" }
+                    }
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <button
@@ -216,12 +263,40 @@ export default function Home() {
         </div>
 
         {error && <p style={{ color: "var(--color-chili)" }}>{error}</p>}
-        {remaining !== null && <p className="text-sm opacity-60">Sisa kuota hari ini: {remaining}</p>}
+        {remaining !== null && (
+          <p
+            className="text-sm inline-block px-3 py-1 rounded-full"
+            style={{
+              backgroundColor: remaining <= 1 ? "var(--color-chili)" : "var(--color-sand)",
+              color: remaining <= 1 ? "white" : "var(--color-ink)",
+              opacity: remaining <= 1 ? 1 : 0.8,
+            }}
+          >
+            Sisa kuota hari ini: {remaining}
+          </p>
+        )}
 
-        {result && (
-          <div className="relative">
+        {loading && (
+          <div className="rounded-2xl p-5 border-2 space-y-2" style={{ borderColor: "var(--color-sand)", backgroundColor: "white" }}>
+            <div className="h-3 rounded animate-skeleton" style={{ backgroundColor: "var(--color-sand)", width: "70%" }} />
+            <div className="h-3 rounded animate-skeleton" style={{ backgroundColor: "var(--color-sand)", width: "90%" }} />
+            <div className="h-3 rounded animate-skeleton" style={{ backgroundColor: "var(--color-sand)", width: "40%" }} />
+          </div>
+        )}
+
+        {!loading && result && (
+          <div className="relative animate-fade-in-up">
             <div className="rounded-t-lg p-5 border-2 border-b-0" style={{ borderColor: "var(--color-sand)", backgroundColor: "white" }}>
-              <p className="text-xs uppercase tracking-widest opacity-50 mb-2">Hasil — {platform}</p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs uppercase tracking-widest opacity-50">Hasil — {platform}</p>
+                <button
+                  onClick={handleCopy}
+                  className="text-xs font-semibold px-3 py-1 rounded-full transition-all duration-150 active:scale-[0.95]"
+                  style={{ backgroundColor: "var(--color-sand)", color: "var(--color-ink)" }}
+                >
+                  {copied ? "Disalin ✓" : "Salin teks"}
+                </button>
+              </div>
               <p className="whitespace-pre-wrap font-mono text-sm">{result}</p>
             </div>
             <div

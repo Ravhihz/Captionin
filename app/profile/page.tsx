@@ -9,6 +9,14 @@ export default function ProfilePage() {
   const { data: session, status } = useSession();
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  async function handleCopy(id: string, content: string) {
+    await navigator.clipboard.writeText(content);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 1500);
+  }
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -55,39 +63,64 @@ export default function ProfilePage() {
           )}
 
           <div className="space-y-4">
-            {history.map((item) => (
-              <div key={item.id} className="relative">
+            {history.map((item, i) => {
+              const isExpanded = expandedId === item.id;
+              const isLong = item.content.length > 200;
+              const shownText = isExpanded || !isLong ? item.content : item.content.slice(0, 200) + "...";
+
+              return (
                 <div
-                  className="rounded-t-lg p-4 border-2 border-b-0"
-                  style={{ borderColor: "var(--color-sand)", backgroundColor: "white" }}
+                  key={item.id}
+                  className="relative animate-fade-in-up"
+                  style={{ animationDelay: `${i * 60}ms` }}
                 >
-                  <div className="flex justify-between items-center mb-2">
-                    <span
-                      className="text-xs font-semibold px-2 py-1 rounded-full text-white"
-                      style={{ backgroundColor: "var(--color-pandan)" }}
-                    >
-                      {item.platform}
-                    </span>
-                    <span className="text-xs opacity-50">
-                      {new Date(item.createdAt).toLocaleString("id-ID")}
-                    </span>
+                  <div
+                    className="rounded-t-lg p-4 border-2 border-b-0 transition-shadow hover:shadow-sm"
+                    style={{ borderColor: "var(--color-sand)", backgroundColor: "white" }}
+                  >
+                    <div className="flex justify-between items-center mb-2">
+                      <span
+                        className="text-xs font-semibold px-2 py-1 rounded-full text-white"
+                        style={{ backgroundColor: "var(--color-pandan)" }}
+                      >
+                        {item.platform}
+                      </span>
+                      <span className="text-xs opacity-50">
+                        {new Date(item.createdAt).toLocaleString("id-ID")}
+                      </span>
+                    </div>
+                    <p className="text-sm font-semibold mb-1">{item.productName}</p>
+                    <p className="text-sm whitespace-pre-wrap font-mono opacity-80">{shownText}</p>
+
+                    <div className="flex items-center gap-3 mt-3">
+                      {isLong && (
+                        <button
+                          onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                          className="text-xs font-semibold underline opacity-70 transition-opacity hover:opacity-100"
+                        >
+                          {isExpanded ? "Tampilkan lebih sedikit" : "Baca selengkapnya"}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleCopy(item.id, item.content)}
+                        className="text-xs font-semibold px-3 py-1 rounded-full transition-all duration-150 active:scale-[0.95]"
+                        style={{ backgroundColor: "var(--color-sand)", color: "var(--color-ink)" }}
+                      >
+                        {copiedId === item.id ? "Disalin ✓" : "Salin teks"}
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-sm font-semibold mb-1">{item.productName}</p>
-                  <p className="text-sm whitespace-pre-wrap font-mono opacity-80">
-                    {item.content.slice(0, 200)}
-                    {item.content.length > 200 ? "..." : ""}
-                  </p>
+                  <div
+                    className="h-2 border-2 border-t-0 rounded-b-lg"
+                    style={{
+                      borderColor: "var(--color-sand)",
+                      backgroundImage:
+                        "repeating-linear-gradient(90deg, transparent, transparent 6px, var(--color-sand) 6px, var(--color-sand) 10px)",
+                    }}
+                  />
                 </div>
-                <div
-                  className="h-2 border-2 border-t-0 rounded-b-lg"
-                  style={{
-                    borderColor: "var(--color-sand)",
-                    backgroundImage:
-                      "repeating-linear-gradient(90deg, transparent, transparent 6px, var(--color-sand) 6px, var(--color-sand) 10px)",
-                  }}
-                />
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       createdAt: new Date().toISOString(),
     });
 
-    return NextResponse.json({ content, remaining: quota.remaining });
+    return NextResponse.json({ content, remaining: quota.remaining, unlimited: quota.unlimited });
   } catch (err) {
     console.error("Generate error:", err);
     return NextResponse.json(
